@@ -7,6 +7,7 @@ function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState("");
   const [moreDetail, setMoreDetail] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,8 +19,10 @@ function App() {
         );
         setWeatherData(response.data);
         console.log(response);
+        setError(null);
       } catch (error) {
         console.log(error);
+        setError(error);
       }
     };
     if (location) {
@@ -52,20 +55,18 @@ function App() {
                 value={location}
                 onChange={getLocationInput}
               />
-              <button
-                className="btn btn-primary"
-                onClick={getLocationInput}
-                type="button"
-              >
-                Submit
-              </button>
             </div>
           </div>
         </div>
-        {weatherData && (
+        {error && location && (
+          <div className="alert alert-danger mt-3">City Not Found</div>
+        )}
+        {weatherData && !error && (
           <div className="row mt-3">
             <h2 className="text-center mb-3">
-              {!location ? "" : `City of ${location.toUpperCase()}`}
+              {!location
+                ? ""
+                : `City of ${location}, ${weatherData.location.country.toUpperCase()}`}
             </h2>
             {location && (
               <>
